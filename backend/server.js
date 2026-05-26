@@ -11,9 +11,9 @@ app.use(cors());
 app.use(express.json());
 
 const generalLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 15 minutos
-  max: 100, // Límite de 100 peticiones por IP cada 15 minutos
-  message: { error: 'Demasiadas peticiones desde esta IP, por favor intenta de nuevo en 15 minutos.' }
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 100, // Límite de 100 peticiones por IP cada 5 minutos
+  message: { error: 'Demasiadas peticiones desde esta IP, por favor intenta de nuevo en 5 minutos.' }
 });
 
 // Rutas

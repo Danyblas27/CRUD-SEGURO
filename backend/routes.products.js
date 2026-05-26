@@ -6,9 +6,9 @@ const { authMiddleware } = require('./auth.middleware');
 const router = express.Router();
 
 const productsWriteLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // Bloqueo por un periodo de 15 minutos
+  windowMs: 5 * 60 * 1000, // Bloqueo por un periodo de 5 minutos
   max: 100, // Máximo 100 modificaciones (crear/editar/borrar) por IP en ese periodo
-  message: { error: 'Has realizado demasiadas modificaciones en el inventario. Por favor, intenta de nuevo en 15 minutos.' }
+  message: { error: 'Has realizado demasiadas modificaciones en el inventario. Por favor, intenta de nuevo en 5 minutos.' }
 });
 
 // Todas las rutas de productos requieren autenticación
