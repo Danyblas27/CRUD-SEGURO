@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, 'melodys.db');
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'melodys.db');
 
 let db;
 

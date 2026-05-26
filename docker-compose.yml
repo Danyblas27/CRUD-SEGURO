@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: melodys-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DB_PATH=/data/melodys.db
+      - JWT_SECRET=melodys_secret_key_2024
+    volumes:
+      - db-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: melodys-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  db-data:
+    name: melodys-db-volume
