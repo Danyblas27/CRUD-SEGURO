@@ -8,7 +8,7 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'melodys_secret_key_2024';
 
 const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hora
+  windowMs: 5 * 60 * 1000, // 1 hora
   max: 10, // Límite de 10 intentos por IP cada hora
   message: { error: 'Demasiados intentos de inicio de sesión, por favor intenta en 1 hora.' }
 });

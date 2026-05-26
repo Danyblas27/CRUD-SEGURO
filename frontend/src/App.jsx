@@ -15,6 +15,10 @@ function App() {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
 
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+
   useEffect(() => {
     if (token) {
       // Validar el token y obtener los datos del usuario
@@ -107,6 +111,39 @@ function App() {
       }
     } catch (error) {
       console.error("Error al eliminar producto", error);
+    }
+  };
+
+  const startEditing = (product) => {
+    setEditingId(product.id);
+    setEditName(product.name);
+    setEditPrice(product.price);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditName('');
+    setEditPrice('');
+  };
+
+  const handleUpdate = async (id) => {
+    try {
+      const res = await fetch(`${API}/products/${id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: editName, price: parseFloat(editPrice) })
+      });
+      if (res.ok) {
+        fetchProducts(search); // Recargamos la lista
+        cancelEditing();       // Salimos del modo edición
+      } else {
+        alert("Error al actualizar el producto");
+      }
+    } catch (error) {
+      console.error("Error al actualizar producto", error);
     }
   };
 
@@ -240,15 +277,43 @@ function App() {
                 borderBottom: '1px solid #e5e7eb',
                 backgroundColor: 'white'
               }}>
-                <div>
-                  <strong style={{ display: 'block', color: '#111827', fontSize: '16px' }}>{p.name}</strong>
-                  <span style={{ color: '#059669', fontWeight: '600', fontSize: '15px' }}>${p.price.toFixed(2)}</span>
-                </div>
-                <button 
-                  onClick={() => handleDelete(p.id)} 
-                  style={{ padding: '8px 12px', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
-                  Eliminar
-                </button>
+                {/* 3. CONDICIONAL: Si este producto es el que estamos editando, mostramos inputs */}
+                {editingId === p.id ? (
+                  <div style={{ display: 'flex', gap: '10px', width: '100%', alignItems: 'center' }}>
+                    <input 
+                      type="text" value={editName} onChange={e => setEditName(e.target.value)}
+                      style={{ flex: 2, padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', outline: 'none' }}
+                    />
+                    <input 
+                      type="number" value={editPrice} onChange={e => setEditPrice(e.target.value)}
+                      style={{ flex: 1, padding: '8px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', outline: 'none' }}
+                    />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleUpdate(p.id)} style={{ padding: '8px 12px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>Guardar</button>
+                      <button onClick={cancelEditing} style={{ padding: '8px 12px', backgroundColor: '#6b7280', color: 'white', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>Cancelar</button>
+                    </div>
+                  </div>
+                ) : (
+                  /* 4. VISTA NORMAL: Texto y botones de Editar / Eliminar */
+                  <>
+                    <div>
+                      <strong style={{ display: 'block', color: '#111827', fontSize: '16px' }}>{p.name}</strong>
+                      <span style={{ color: '#059669', fontWeight: '600', fontSize: '15px' }}>${p.price.toFixed(2)}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button 
+                        onClick={() => startEditing(p)} 
+                        style={{ padding: '8px 12px', backgroundColor: 'transparent', color: '#4f46e5', border: '1px solid #4f46e5', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
+                        Editar
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(p.id)} 
+                        style={{ padding: '8px 12px', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
+                        Eliminar
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>
