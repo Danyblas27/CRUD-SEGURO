@@ -1,3 +1,5 @@
+dani es gei
+
 # 🎵 Melody's — Sistema de Inventario
 
 CRUD completo de inventario con autenticación JWT, listo para escalar con roles y permisos.
