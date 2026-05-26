@@ -44,7 +44,6 @@ app.use((err, req, res, next) => {
 // Inicializar DB y arrancar servidor
 getDb().then(() => {
   app.listen(PORT, () => {
-    console.log(`🎵 Melody's API corriendo en http://localhost:${PORT}`);
-    console.log(`   Usuario por defecto: admin / admin123`);
+    console.log(`que gai`);
   });
 });
