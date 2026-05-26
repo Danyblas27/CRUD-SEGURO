@@ -1,13 +1,20 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { get, run } = require('./db');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'melodys_secret_key_2024';
 
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 10, // Límite de 10 intentos por IP cada hora
+  message: { error: 'Demasiados intentos de inicio de sesión, por favor intenta en 1 hora.' }
+});
+
 // POST /api/auth/login
-router.post('/login', (req, res) => {
+router.post('/login', authLimiter, (req, res) => {
   const { username, password } = req.body;
   if (!username || !password)
     return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
@@ -31,7 +38,7 @@ router.post('/login', (req, res) => {
 });
 
 // POST /api/auth/register  (abierto para futura integración de roles)
-router.post('/register', (req, res) => {
+router.post('/register', authLimiter, (req, res) => {
   const { username, password, role = 'viewer' } = req.body;
   if (!username || !password)
     return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
@@ -50,7 +57,7 @@ router.post('/register', (req, res) => {
 });
 
 // GET /api/auth/me  — validar token
-router.get('/me', (req, res) => {
+router.get('/me', authLimiter, (req, res) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) return res.status(401).json({ error: 'No autenticado' });
   const token = authHeader.split(' ')[1];

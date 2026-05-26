@@ -60,6 +60,13 @@ function seedData() {
 
   const products = [
     ['Guitarra Acústica', 'Guitarra acústica de 6 cuerdas', 'Cuerdas', 3500, 5, 'pza'],
+    ['Guitarra Eléctrica', 'Guitarra eléctrica de 6 cuerdas', 'Cuerdas', 5000, 3, 'pza'],
+    ['Bajo Eléctrico', 'Bajo eléctrico de 4 cuerdas', 'Cuerdas', 4500, 2, 'pza'],
+    ['Docerela', 'Docerela acústica de 12 cuerdas', 'Cuerdas', 6500, 4, 'pza'],
+    ['Contrabajo', 'Contrabajo acústico de 6 cuerdas', 'Cuerdas', 3500, 5, 'pza'],
+    ['Amplificador', 'Amplificador de guitarra portátil', 'Cuerdas', 4000, 5, 'pza'],
+    ['Violonchelo', 'Violonchelo acústico de 4 cuerdas', 'Cuerdas', 4500, 3, 'pza'],
+    ['Viola', 'Viola acústica de 4 cuerdas', 'Cuerdas', 4800, 2, 'pza'],
     ['Violín 4/4', 'Violín tamaño completo para adulto', 'Cuerdas', 4200, 3, 'pza'],
     ['Piano Digital', 'Piano digital 88 teclas con pedales', 'Teclados', 12500, 2, 'pza'],
     ['Batería Completa', 'Set de batería acústica 5 piezas', 'Percusión', 18000, 1, 'set'],

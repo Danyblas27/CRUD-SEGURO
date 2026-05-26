@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { getDb } = require('./db');
 
 const app = express();
@@ -9,7 +10,16 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Límite de 100 peticiones por IP cada 15 minutos
+  message: { error: 'Demasiadas peticiones desde esta IP, por favor intenta de nuevo en 15 minutos.' }
+});
+
 // Rutas
+app.use('/api/auth', require('./routes.auth'));
+app.use('/api/products', require('./routes.products'));
+app.use('/api', generalLimiter);
 app.use('/api/auth', require('./routes.auth'));
 app.use('/api/products', require('./routes.products'));
 

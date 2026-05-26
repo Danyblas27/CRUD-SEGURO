@@ -1,8 +1,15 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { all, get, run } = require('./db');
 const { authMiddleware } = require('./auth.middleware');
 
 const router = express.Router();
+
+const productsWriteLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // Bloqueo por un periodo de 15 minutos
+  max: 100, // Máximo 100 modificaciones (crear/editar/borrar) por IP en ese periodo
+  message: { error: 'Has realizado demasiadas modificaciones en el inventario. Por favor, intenta de nuevo en 15 minutos.' }
+});
 
 // Todas las rutas de productos requieren autenticación
 router.use(authMiddleware);
@@ -47,7 +54,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/products
-router.post('/', (req, res) => {
+router.post('/', productsWriteLimiter, (req, res) => {
   const { name, description, category, price, stock, unit } = req.body;
   if (!name) return res.status(400).json({ error: 'El nombre es requerido' });
   if (price === undefined || price === null) return res.status(400).json({ error: 'El precio es requerido' });
@@ -63,7 +70,7 @@ router.post('/', (req, res) => {
 });
 
 // PUT /api/products/:id
-router.put('/:id', (req, res) => {
+router.put('/:id', productsWriteLimiter, (req, res) => {
   const existing = get('SELECT * FROM products WHERE id = ?', [req.params.id]);
   if (!existing) return res.status(404).json({ error: 'Producto no encontrado' });
 
@@ -89,7 +96,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /api/products/:id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', productsWriteLimiter, (req, res) => {
   const existing = get('SELECT * FROM products WHERE id = ?', [req.params.id]);
   if (!existing) return res.status(404).json({ error: 'Producto no encontrado' });
 
